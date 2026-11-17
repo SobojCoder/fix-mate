@@ -110,7 +110,7 @@ export default function SignUp() {
             </div>
 
             <Link
-              href="/login"
+              href="/sign-in"
               className="pb-4 text-center text-xl font-semibold text-slate-400 transition hover:text-[#FFB020]"
             >
               Login
@@ -213,6 +213,7 @@ export default function SignUp() {
           </div>
 
           {/* Signup Button */}
+          
           <button
             type="button"
             className="mt-7 flex w-full items-center justify-center gap-3 rounded-xl bg-[#FFB020] py-4 font-bold text-[#05070D] transition hover:bg-[#2563EB] hover:text-white"
