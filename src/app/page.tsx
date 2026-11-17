@@ -1,4 +1,5 @@
 import Banner from "@/components/homePage/banner";
+import Border from "@/components/homePage/border";
 import Categories from "@/components/homePage/category";
 import Feature from "@/components/homePage/feature";
 import HowItWorks from "@/components/homePage/HowFixMateWorks";
@@ -10,8 +11,11 @@ export default function Home() {
     <div>
       <Banner />
       <Feature />
+      <Border />
       <HowItWorks />
+      <Border />
       <Categories />
+      <Border />
       <WhyChooseUs />
     </div>
   );
