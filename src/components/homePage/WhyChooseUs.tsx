@@ -54,8 +54,8 @@ export default function WhyChooseUs() {
           </h2>
 
           <p className="mt-4 max-w-lg leading-7 text-slate-300">
-            We're more than just a repair service.
-            We're your trusted partner for fast,
+            We&apos;re more than just a repair service.
+            We&apos;re your trusted partner for fast,
             reliable, and transparent repairs.
           </p>
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
-import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 
 const geistSans = Geist({
@@ -26,8 +26,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
         {children}
+        <Toaster
+          toastOptions={{
+            style: {
+              background: "#0B1020",
+              color: "#fff",
+              border: "1px solid rgba(255,255,255,0.12)",
+            },
+            success: { iconTheme: { primary: "#FFB020", secondary: "#05070D" } },
+            error: { iconTheme: { primary: "#EF4444", secondary: "#05070D" } },
+          }}
+        />
         <Footer />
       </body>
     </html>

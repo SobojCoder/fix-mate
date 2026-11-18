@@ -44,12 +44,15 @@ export default function Navbar() {
   const [dark, setDark] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
-  const servicesRef = useRef(null);
+  const servicesRef = useRef<HTMLLIElement | null>(null);
 
   // close the services dropdown when clicking outside
   useEffect(() => {
-    const onClick = (e) => {
-      if (servicesRef.current && !servicesRef.current.contains(e.target)) {
+    const onClick = (e: MouseEvent) => {
+      if (
+        servicesRef.current &&
+        !servicesRef.current.contains(e.target as Node)
+      ) {
         setServicesOpen(false);
       }
     };
@@ -61,7 +64,7 @@ export default function Navbar() {
     document.documentElement.classList.toggle("dark", dark);
   }, [dark]);
 
-  const isActive = (href) =>
+  const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   const shell = dark
@@ -177,13 +180,13 @@ export default function Navbar() {
           </button>
 
           <Link
-            href="/login"
+            href="/sign-in"
             className={`hidden rounded-full border px-5 py-2 text-sm font-semibold transition-colors sm:block ${iconBtn}`}
           >
             Login
           </Link>
           <Link
-            href="/register"
+            href="/sign-up"
             className="hidden rounded-full bg-[#FFB020] px-5 py-2 text-sm font-semibold text-[#05070D] transition hover:brightness-110 sm:block"
           >
             Sign Up
@@ -227,14 +230,14 @@ export default function Navbar() {
           </ul>
           <div className="mt-3 grid grid-cols-2 gap-2">
             <Link
-              href="/login"
+              href="/sign-in"
               onClick={() => setMobileOpen(false)}
               className={`rounded-xl border py-3 text-center text-sm font-semibold ${iconBtn}`}
             >
               Login
             </Link>
             <Link
-              href="/register"
+              href="/sign-up"
               onClick={() => setMobileOpen(false)}
               className="rounded-xl bg-[#FFB020] py-3 text-center text-sm font-semibold text-[#05070D]"
             >

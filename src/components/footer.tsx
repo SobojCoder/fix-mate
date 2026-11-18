@@ -1,3 +1,4 @@
+"use cache";
 
 import Link from "next/link";
 import {
@@ -6,7 +7,6 @@ import {
   Phone,
   MapPin,
 } from "lucide-react";
-import { ImFacebook2 } from "react-icons/im";
 import { TfiFacebook } from "react-icons/tfi";
 import { PiYoutubeLogoBold } from "react-icons/pi";
 import { FaLinkedinIn } from "react-icons/fa";
@@ -28,7 +28,7 @@ const categories = [
   "Home Appliances",
 ];
 
-export default function Footer() {
+export default async function Footer() {
   return (
     <footer className="bg-[#05070D] text-white">
 
