@@ -35,15 +35,7 @@ const links = [
   { label: "Contact", href: "/contact" },
 ];
 
-const services = [
-  "Smartphone Screen",
-  "Laptop Servicing",
-  "AC Servicing",
-  "Refrigerator",
-  "TV Repair",
-  "Washing Machine",
-  "Electrical Wiring",
-];
+
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -174,58 +166,7 @@ export default function Navbar() {
               active ? "bg-[#2563EB] text-white" : idleLink
             }`;
 
-            if (l.dropdown) {
-              return (
-                <li key={l.label} ref={servicesRef} className="relative">
-                  <button
-                    type="button"
-                    className={cls}
-                    aria-expanded={servicesOpen}
-                    aria-haspopup="true"
-                    onClick={() => setServicesOpen((o) => !o)}
-                  >
-                    {l.label}
-                    <HiChevronDown
-                      className={`h-4 w-4 transition-transform ${
-                        servicesOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-                  {servicesOpen && (
-                    <ul
-                      className={`absolute left-0 top-full mt-3 w-60 rounded-2xl border p-2 shadow-2xl ${
-                        dark
-                          ? "border-white/10 bg-[#0B1020] text-white"
-                          : "border-slate-200 bg-white text-[#05070D]"
-                      }`}
-                    >
-                      {services.map((s) => (
-                        <li key={s}>
-                          <Link
-                            href={`/services?type=${encodeURIComponent(s)}`}
-                            onClick={() => setServicesOpen(false)}
-                            className={`block rounded-xl px-3 py-2 text-sm ${
-                              dark ? "hover:bg-white/10" : "hover:bg-slate-100"
-                            }`}
-                          >
-                            {s}
-                          </Link>
-                        </li>
-                      ))}
-                      <li className="mt-1 border-t border-white/10 pt-1">
-                        <Link
-                          href="/services"
-                          onClick={() => setServicesOpen(false)}
-                          className="block rounded-xl px-3 py-2 text-sm font-semibold text-[#FFB020] hover:bg-white/10"
-                        >
-                          View all services
-                        </Link>
-                      </li>
-                    </ul>
-                  )}
-                </li>
-              );
-            }
+           
 
             return (
               <li key={l.label}>
