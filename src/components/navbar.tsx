@@ -269,7 +269,7 @@ export default function Navbar() {
                 className={`flex items-center gap-2 rounded-full border py-1 pl-1 pr-3 transition-colors ${iconBtn}`}
               >
                 {renderAvatar(32)}
-                <span className="hidden max-w-[110px] truncate text-sm font-semibold sm:block">
+                <span className="hidden max-w-[110px]  truncate text-sm font-semibold sm:block">
                   {user.name}
                 </span>
                 <HiChevronDown
