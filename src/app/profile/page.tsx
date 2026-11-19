@@ -19,6 +19,9 @@ import toast from "react-hot-toast";
 
 import Navbar from "@/components/navbar";
 import { authClient } from "@/lib/auth-client";
+import { BiLeftArrow } from "react-icons/bi";
+import { FaArrowLeft } from "react-icons/fa";
+import Link from "next/link";
 
 type FormState = {
   name: string;
@@ -167,8 +170,6 @@ export default function ProfilePage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#05070D] text-white">
-      <Navbar />
-
       {/* Decorative glow orbs */}
       <div
         aria-hidden
@@ -180,6 +181,10 @@ export default function ProfilePage() {
       />
 
       <main className="relative mx-auto max-w-4xl px-6 pb-24 pt-14">
+        <FaArrowLeft
+          onClick={() => router.back()}
+          className="my-5 cursor-pointer text-xl text-white transition-all duration-300 hover:-translate-x-1 hover:text-[#FFB020]"
+        />
         {/* ── Header card ── */}
         <section className="overflow-hidden rounded-3xl border border-white/10 bg-[#0B1020]/85 shadow-[0_35px_90px_-30px_rgba(37,99,235,0.5)] backdrop-blur-xl">
           {/* Banner strip */}
@@ -240,9 +245,7 @@ export default function ProfilePage() {
               </p>
 
               {uploading && (
-                <p className="mt-2 text-xs text-[#FFB020]">
-                  Uploading photo…
-                </p>
+                <p className="mt-2 text-xs text-[#FFB020]">Uploading photo…</p>
               )}
             </div>
 
@@ -321,7 +324,9 @@ export default function ProfilePage() {
                     name="image"
                     type="url"
                     value={form.image}
-                    onChange={(e) => setForm({ ...form, image: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, image: e.target.value })
+                    }
                     placeholder="https://example.com/your-photo.jpg"
                     className="w-full bg-transparent py-3.5 text-sm text-white outline-none placeholder:text-slate-600"
                   />
@@ -342,7 +347,9 @@ export default function ProfilePage() {
                     name="phone"
                     type="tel"
                     value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    onChange={(e) =>
+                      setForm({ ...form, phone: e.target.value })
+                    }
                     placeholder="+880 1234-567890"
                     className={fieldBox}
                   />
