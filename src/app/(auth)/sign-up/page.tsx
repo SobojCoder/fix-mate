@@ -13,6 +13,7 @@ import {
   Star,
   Zap,
   ShieldCheck,
+  Building2,
 } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
 
@@ -22,6 +23,33 @@ import AuthToggle from "@/components/authToggle";
 import { authClient } from "@/lib/auth-client";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { cn } from "cn";
+import { Label } from "@/components/ui/label";
+
+export type SignUpRole = "Customer" | "Technician";
+
+export type SignUpData = {
+  name: string;
+  email: string;
+  role: SignUpRole;
+  password: string;
+  confirmPassword: string;
+};
+
+const roles = [
+  {
+    value: "Customer",
+    label: "Customer",
+    description: "Find & apply to service",
+    icon: User,
+  },
+  {
+    value: "Technician",
+    label: "Technician",
+    description: "Post service",
+    icon: Building2,
+  },
+] as const;
 
 /* Password strength → label + bar color */
 const strengthMeta = [
@@ -43,7 +71,7 @@ function getPasswordStrength(password: string) {
 
 export default function SignUp() {
   const router = useRouter();
-
+  const [role, setRole] = useState<SignUpRole>("Customer");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [password, setPassword] = useState("");
@@ -53,10 +81,9 @@ export default function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  const formData = new FormData(e.currentTarget);
+    const formData = new FormData(e.currentTarget);
 
-    const name = String(formData.get("name") || "").trim();
-    const email = String(formData.get("email") || "").trim();
+    const userData = Object.fromEntries(formData) as unknown as SignUpData;
     const confirmPassword = String(formData.get("confirmPassword") ?? "");
 
     if (password !== confirmPassword) {
@@ -65,26 +92,30 @@ export default function SignUp() {
     }
     setError(null);
 
-   try {
+    try {
       const { data, error } = await authClient.signUp.email({
-        name,
-        email,
-        password,
+        name: userData.name,
+        email: userData.email,
+        password: userData.password,
+        accountType: role,
       });
 
       if (error) {
         toast.error(error.message || "Account could not be created.");
         return;
       }
+      if (!data) {
+        toast.error("Account creation failed. Please try again.");
+        return;
+      }
 
-      if (data) {
+      
         toast.success("Account created! Now sign in.");
         router.push("/sign-in");
-      }
+      
     } catch {
       toast.error("Something went wrong. Please try again.");
     }
-
   };
 
   return (
@@ -207,6 +238,52 @@ export default function SignUp() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Full name */}
               <div>
+                <div className="flex flex-col gap-2">
+                  <Label>Account type</Label>
+                  <div
+                    role="radiogroup"
+                    aria-label="Account type"
+                    className="grid gap-2 sm:grid-cols-2 mb-4"
+                  >
+                    {roles.map(
+                      ({ value, label, description, icon: RoleIcon }) => (
+                        <label
+                          key={value}
+                          data-role={value}
+                          className={cn(
+                            "group/role flex cursor-pointer flex-col items-center gap-1 rounded-lg border px-3 py-2.5 text-center transition-colors outline-none select-none",
+                            "has-focus-visible:border-indigo-500/60 has-focus-visible:ring-3 has-focus-visible:ring-indigo-500/25",
+                            role === value
+                              ? "border-indigo-500/60 bg-indigo-500/10 text-white"
+                              : "border-white/10 bg-white/5 text-zinc-300 hover:bg-white/10",
+                          )}
+                        >
+                          <input
+                            type="radio"
+                            name="role"
+                            value={value}
+                            checked={role === value}
+                            onChange={() => setRole(value)}
+                            className="sr-only"
+                          />
+                          <RoleIcon
+                            className={
+                              role === value
+                                ? "size-4 text-indigo-400"
+                                : "size-4 text-zinc-500"
+                            }
+                          />
+                          <span className="text-xs font-medium whitespace-nowrap">
+                            {label}
+                          </span>
+                          <span className="text-[11px] text-zinc-500">
+                            {description}
+                          </span>
+                        </label>
+                      ),
+                    )}
+                  </div>
+                </div>
                 <label
                   htmlFor="name"
                   className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400"
@@ -270,7 +347,9 @@ export default function SignUp() {
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
+                    }
                     className="shrink-0 text-slate-400 transition hover:text-white"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
@@ -283,7 +362,9 @@ export default function SignUp() {
                     <div
                       key={i}
                       className={`h-1 flex-1 rounded-full transition-colors ${
-                        i <= strength ? strengthMeta[strength].bar : "bg-white/10"
+                        i <= strength
+                          ? strengthMeta[strength].bar
+                          : "bg-white/10"
                       }`}
                     />
                   ))}

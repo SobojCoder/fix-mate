@@ -13,10 +13,14 @@ import {
   Users,
   Wrench,
   CheckCircle,
+  User,
+  Building2,
 } from "lucide-react";
 
 import Navbar from "@/components/navbar";
 import repairImage from "@/../public/images/repair-hero.jpg";
+
+
 
 /* ── Stats ── */
 const stats = [
