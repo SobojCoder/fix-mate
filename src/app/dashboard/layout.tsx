@@ -8,20 +8,16 @@ import {
     ArrowLeftRight,
   BadgeCheck,
   CalendarCheck,
-  CalendarDays,
-  ChartBar,
   ChevronDown,
   ClipboardList,
   CreditCard,
   Heart,
   LayoutGrid,
   LogOut,
-  MapPin,
   Menu,
   PlusCircle,
   Settings,
   Star,
-  Tag,
   User,
   UserCheck,
   Users,
@@ -34,6 +30,7 @@ import toast from "react-hot-toast";
 
 import { authClient } from "@/lib/auth-client";
 import { MdOutlineDashboard } from "react-icons/md";
+import Footer from "@/components/footer";
 
 /* ══════════════════════════════════════════════
    Menu configuration
@@ -519,10 +516,11 @@ export default function DashboardLayout({
           pending={isPending}
           onToggleMenu={() => setSidebarOpen((o) => !o)}
         />
-
+ 
         <main className="mx-auto w-full max-w-7xl flex-1 p-4 sm:p-6 lg:p-8">
           {children}
         </main>
+         
       </div>
     </div>
   );

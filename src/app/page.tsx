@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import Banner from "@/components/homePage/banner";
 import Border from "@/components/homePage/border";
 import Categories from "@/components/homePage/category";
@@ -18,6 +19,7 @@ export default function Home() {
       <Categories />
       <Border />
       <WhyChooseUs />
+       <Footer />
     </div>
   );
 }

@@ -38,7 +38,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             error: { iconTheme: { primary: "#EF4444", secondary: "#05070D" } },
           }}
         />
-        <Footer />
+       
       </body>
     </html>
   );
