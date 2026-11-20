@@ -158,7 +158,6 @@ export default function AddServicePage() {
     try {
       /* TODO(Phase C): POST /api/services (verifyToken + verifyTechnician)
          on the Express server — not implemented there yet. */
-
          
       const res = await fetch(`${BASE_URL}/services`, {
         method: "POST",

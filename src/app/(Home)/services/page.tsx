@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { getServices } from "@/lib/api/services";
+import Navbar from "@/components/navbar";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -68,7 +69,9 @@ export default function ServicesPage({
   searchParams: SearchParams;
 }) {
   return (
+
     <div className="min-h-screen bg-[#05070D] text-white">
+      <Navbar />
       {/* ── Page heading ── */}
       <section className="relative overflow-hidden px-6 pb-12 pt-16 md:px-12">
         <div

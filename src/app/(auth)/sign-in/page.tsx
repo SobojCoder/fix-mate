@@ -56,7 +56,18 @@ export default function SignIn() {
 
       if (data) {
         toast.success("Welcome back!");
-        router.push("/");
+
+        /* Spec: return to the intended page (e.g. ?callbackUrl=/services/id),
+           but only accept same-origin paths to avoid open redirects. */
+        const params = new URLSearchParams(window.location.search);
+        const callbackUrl =
+          params.get("callbackUrl") || params.get("redirect") || "";
+        const safeCallback =
+          callbackUrl.startsWith("/") && !callbackUrl.startsWith("//")
+            ? callbackUrl
+            : "/";
+
+        router.push(safeCallback);
       }
     } catch {
       toast.error("Something went wrong. Please try again.");
