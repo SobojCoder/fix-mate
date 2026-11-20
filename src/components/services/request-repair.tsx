@@ -130,11 +130,12 @@ export default function RequestRepair({
       /* TODO(Phase C): POST /api/bookings (verifyToken + verifyCustomer).
          The server must also refuse duplicate active requests for the
          same service — its message is shown below when returned. */
-      const res = await fetch(`${BASE_URL}/api/bookings`, {
+      const res = await fetch(`${BASE_URL}/bookings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           serviceId: service._id,
+          applicantId: user?.id,
           serviceTitle: service.title,
           serviceImage: service.image,
           category: service.category,

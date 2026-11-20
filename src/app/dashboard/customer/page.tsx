@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -11,8 +13,21 @@ import {
 } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
+import { getBooking } from "@/lib/api/booking";
 import OverviewHeader from "@/components/dashboard/overview-header";
 import StatsCard from "@/components/dashboard/stats-card";
+
+type Booking = {
+  _id: string;
+  serviceId: string;
+  serviceTitle: string;
+  serviceImage: string;
+  category: string;
+  basePrice: number;
+  preferredDate: string;
+  status: string;
+  paymentStatus: string;
+};
 
 /* Quick actions → the customer's main pages */
 const actions = [
@@ -36,18 +51,78 @@ const actions = [
   },
 ];
 
+/* Spec status colors: Requested=blue, Accepted=indigo, In Progress=amber,
+   Completed=green, Rejected=red, Cancelled=gray */
+const statusBadge: Record<string, string> = {
+  requested: "border-blue-400/40 bg-blue-400/10 text-blue-400",
+  accepted: "border-indigo-400/40 bg-indigo-400/10 text-indigo-400",
+  "in progress": "border-amber-400/40 bg-amber-400/10 text-amber-400",
+  in_progress: "border-amber-400/40 bg-amber-400/10 text-amber-400",
+  "in-progress": "border-amber-400/40 bg-amber-400/10 text-amber-400",
+  completed: "border-emerald-400/40 bg-emerald-400/10 text-emerald-400",
+  rejected: "border-red-400/40 bg-red-400/10 text-red-400",
+  cancelled: "border-slate-400/40 bg-slate-400/10 text-slate-400",
+};
+
+const payBadge: Record<string, string> = {
+  paid: "border-emerald-400/40 bg-emerald-400/10 text-emerald-400",
+  unpaid: "border-amber-400/40 bg-amber-400/10 text-amber-400",
+};
+
+/* Active = requested, accepted or in progress (any spelling) */
+function isActiveStatus(status: string) {
+  const s = (status || "").toLowerCase();
+  return (
+    s === "requested" ||
+    s === "accepted" ||
+    s === "in progress" ||
+    s === "in_progress" ||
+    s === "in-progress"
+  );
+}
+
 export default function CustomerDashboardPage() {
   const { data: session } = authClient.useSession();
   const user = session?.user;
+  const id = user?.id;
 
-  /* TODO(Phase C): replace these zeros with real data from
-     GET /api/bookings/my (verifyToken + verifyCustomer):
-     - total   = bookings.length
-     - active  = status is requested | accepted | in-progress
-     - done    = status is completed */
-  const total = 0;
-  const active = 0;
-  const completed = 0;
+  const [bookings, setBookings] = useState<Booking[] | null>(null);
+
+  /* My bookings for the stat cards. TODO(Phase C): swap to the protected
+     GET /bookings/my (verifyToken + verifyCustomer) once it exists —
+     same query, the server does the filtering. */
+  useEffect(() => {
+    if (!id) return;
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const data = await getBooking(`applicantId=${id}`);
+        if (!cancelled) setBookings(Array.isArray(data) ? data : []);
+      } catch {
+        if (!cancelled) setBookings([]);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+  const loading = bookings === null;
+  const list = bookings ?? [];
+
+  const total = list.length;
+  const active = list.filter((b) => isActiveStatus(b.status)).length;
+  const completed = list.filter(
+    (b) => (b.status || "").toLowerCase() === "completed",
+  ).length;
+
+  /* Latest 5 — booking ids are ObjectIds, so a bigger id means newer */
+  const recent = [...list]
+    .sort((a, b) => (a._id < b._id ? 1 : -1))
+    .slice(0, 5);
 
   return (
     <div className="space-y-6">
@@ -66,6 +141,7 @@ export default function CustomerDashboardPage() {
           icon={ClipboardList}
           accent="blue"
           hint="All time"
+          loading={loading}
         />
         <StatsCard
           label="Active Jobs"
@@ -73,6 +149,7 @@ export default function CustomerDashboardPage() {
           icon={Wrench}
           accent="amber"
           hint="In progress"
+          loading={loading}
         />
         <StatsCard
           label="Completed Jobs"
@@ -80,6 +157,7 @@ export default function CustomerDashboardPage() {
           icon={CircleCheck}
           accent="green"
           hint="All time"
+          loading={loading}
         />
       </div>
 
@@ -116,8 +194,17 @@ export default function CustomerDashboardPage() {
         })}
       </div>
 
-      {/* Requests panel — friendly empty state until bookings API exists */}
-      {total === 0 ? (
+      {/* Requests panel */}
+      {loading ? (
+        <div
+          aria-hidden
+          className="space-y-3 rounded-3xl border border-white/10 bg-[#0B1020] p-6"
+        >
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="h-14 animate-pulse rounded-xl bg-white/5" />
+          ))}
+        </div>
+      ) : total === 0 ? (
         <div className="rounded-3xl border border-dashed border-white/15 bg-[#0B1020]/60 px-6 py-12 text-center">
           <div className="mx-auto grid size-16 place-items-center rounded-full bg-[#2563EB]/15 text-[#FFB020]">
             <ClipboardList size={30} />
@@ -140,9 +227,64 @@ export default function CustomerDashboardPage() {
         </div>
       ) : (
         <div className="rounded-3xl border border-white/10 bg-[#0B1020] p-6">
-          <h2 className="text-base font-bold">Recent requests</h2>
-          {/* TODO(Phase C): list the customer's latest bookings with
-              status + payment badges here */}
+          <div className="flex items-center justify-between gap-4">
+            <h2 className="text-base font-bold">Recent requests</h2>
+
+            <Link
+              href="/dashboard/customer/bookings"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#2563EB] transition hover:text-[#FFB020]"
+            >
+              View all
+              <ArrowRight size={14} />
+            </Link>
+          </div>
+
+          <ul className="mt-5 space-y-3">
+            {recent.map((booking) => (
+              <li
+                key={booking._id}
+                className="flex items-center gap-3 rounded-xl border border-white/10 bg-[#05070D]/60 p-3"
+              >
+                <Image
+                  src={booking.serviceImage}
+                  alt={booking.serviceTitle}
+                  width={44}
+                  height={44}
+                  unoptimized
+                  className="size-11 shrink-0 rounded-lg object-cover"
+                />
+
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-bold">
+                    {booking.serviceTitle}
+                  </p>
+                  <p className="truncate text-xs text-slate-400">
+                    {booking.category} · {booking.preferredDate}
+                  </p>
+                </div>
+
+                <span
+                  className={`hidden shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider sm:block ${
+                    statusBadge[booking.status] ?? statusBadge.requested
+                  }`}
+                >
+                  {booking.status}
+                </span>
+
+                <span
+                  className={`hidden shrink-0 rounded-full border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider md:block ${
+                    payBadge[booking.paymentStatus] ?? payBadge.unpaid
+                  }`}
+                >
+                  {booking.paymentStatus}
+                </span>
+
+                <span className="shrink-0 text-sm font-bold text-[#FFB020]">
+                  ৳{booking.basePrice}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

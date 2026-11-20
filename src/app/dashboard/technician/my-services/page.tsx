@@ -89,15 +89,32 @@ export default function MyServicesPage() {
   const [deleteTarget, setDeleteTarget] = useState<Service | null>(null);
   const [busy, setBusy] = useState(false);
 
-  /* All services, then keep mine. TODO(Phase C): let the server filter —
-     GET /api/services (verifyToken + verifyTechnician). */
+  const email = user?.email;
+
+  /* My services, newest first. TODO(Phase C): the server should filter —
+     GET /services?technicianEmail=… (verifyToken + verifyTechnician).
+     Until it does, the param is ignored, so filter client-side too. */
   useEffect(() => {
+    if (!email) return;
+
     let cancelled = false;
 
     (async () => {
       try {
-        const data = await getServices();
-        if (!cancelled) setServices(Array.isArray(data) ? (data as Service[]) : []);
+        const data = await getServices(`technicianEmail=${email}`);
+        const list = Array.isArray(data) ? (data as Service[]) : [];
+
+        if (!cancelled) {
+          setServices(
+            list
+              .filter((s) => s.technicianEmail === email)
+              .sort(
+                (a, b) =>
+                  new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime(),
+              ),
+          );
+        }
       } catch {
         if (!cancelled) setServices([]);
       }
@@ -106,16 +123,10 @@ export default function MyServicesPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [email]);
 
   const loading = services === null;
 
-  const mine = (services ?? [])
-    .filter((s) => s.technicianEmail === user?.email)
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    );
 
   /* ── Edit ── */
   const openEdit = (service: Service) => {
@@ -283,7 +294,7 @@ export default function MyServicesPage() {
             <div key={i} className="h-16 animate-pulse rounded-xl bg-white/5" />
           ))}
         </div>
-      ) : mine.length === 0 ? (
+      ) : services.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-white/15 bg-[#0B1020]/60 px-6 py-14 text-center">
           <div className="mx-auto grid size-16 place-items-center rounded-full bg-[#2563EB]/15 text-[#FFB020]">
             <Wrench size={30} />
@@ -319,7 +330,7 @@ export default function MyServicesPage() {
             </thead>
 
             <tbody>
-              {mine.map((service) => (
+              {services.map((service) => (
                 <tr
                   key={service._id}
                   className="border-b border-white/5 transition last:border-0 hover:bg-white/[0.03]"
