@@ -187,7 +187,7 @@ export default function MyServicesPage() {
     try {
       /* TODO(Phase C): PATCH /api/services/:id — the server must also set
          approvalStatus back to 'pending' after an edit (spec rule). */
-      const res = await fetch(`${BASE_URL}/api/services/${editTarget._id}`, {
+      const res = await fetch(`${BASE_URL}/services/${editTarget._id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -233,7 +233,7 @@ export default function MyServicesPage() {
     setBusy(true);
     try {
       /* TODO(Phase C): DELETE /api/services/:id (verifyToken + verifyTechnician) */
-      const res = await fetch(`${BASE_URL}/api/services/${deleteTarget._id}`, {
+      const res = await fetch(`${BASE_URL}/services/${deleteTarget._id}`, {
         method: "DELETE",
       });
 

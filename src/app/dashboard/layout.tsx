@@ -65,7 +65,7 @@ const menuItemsByRole: Record<DashboardRole, MenuItem[]> = {
     { label: "Overview", href: "/dashboard/technician", icon: LayoutGrid },
     { label: "Job Requests", href: "/dashboard/technician/jobs", icon: ClipboardList },
     { label: "add-service", href: "/dashboard/technician/add-service", icon: PlusCircle },
-    { label: "My Services", href: "/dashboard/technician/services", icon: Wrench },
+    { label: "My Services", href: "/dashboard/technician/my-services", icon: Wrench },
     { label: "Earnings", href: "/dashboard/technician/earnings", icon: Wallet },
     { label: "Reviews", href: "/dashboard/technician/reviews", icon: Star },
     { label: "Settings", href: "/dashboard/technician/settings", icon: Settings },
@@ -73,7 +73,7 @@ const menuItemsByRole: Record<DashboardRole, MenuItem[]> = {
   admin: [
     { label: "Overview", href: "/dashboard/admin", icon: LayoutGrid },
     { label: "Users", href: "/dashboard/admin/users", icon: Users },
-    { label: "Technicians", href: "/dashboard/technicians", icon: UserCheck },
+    { label: "Technicians", href: "/dashboard/admin/technicians", icon: UserCheck },
     {
       label: "Services",
       href: "/dashboard/admin/services",
