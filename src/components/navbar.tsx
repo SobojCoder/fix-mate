@@ -17,6 +17,7 @@ import {
 } from "react-icons/hi2";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
+import { MdOutlineDashboard } from "react-icons/md";
 
 /*
   Palette
@@ -270,6 +271,18 @@ export default function Navbar() {
                       <HiOutlineUserCircle className="h-5 w-5 text-[#2563EB]" />
                       Profile
                     </Link>
+                    <Link
+                      href={`/dashboard/${user?.accountType?.toLowerCase()}`}
+                      onClick={() => setUserMenuOpen(false)}
+                      className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+                        dark
+                          ? "hover:bg-white/10"
+                          : "hover:bg-slate-100 hover:text-[#05070D]"
+                      }`}
+                    >
+                      <MdOutlineDashboard className="h-5 w-5 text-[#2563EB]" />
+                      Dashboard
+                    </Link>
 
                     <Link
                       href="/services"
@@ -394,6 +407,18 @@ export default function Navbar() {
                   >
                     <HiOutlineUserCircle className="h-5 w-5 text-[#2563EB]" />
                     Profile
+                  </Link>
+                  <Link
+                    href={`/dashboard/${user?.accountType}`}
+                    onClick={() => setMobileOpen(false)}
+                    className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${
+                      isActive("/profile")
+                        ? "bg-[#2563EB] text-white"
+                        : idleLink
+                    }`}
+                  >
+                    <MdOutlineDashboard className="h-5 w-5 text-[#2563EB]" />
+                    Dashboard
                   </Link>
                   <Link
                     href="/services"
